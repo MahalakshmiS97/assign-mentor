@@ -20,12 +20,17 @@ const getMentors = async (req, res) => {
 const createMentor = async (req, res) => {
   console.log(req.body);
   try {
-    let mentor = await mentorModel.create(req.body);
-
+    let mentor = await mentorModel.findOne({Email:req.body.Email})
+    if(!mentor){
+    await mentorModel.create(req.body);
     res.status(201).send({
-      message: "Mentor created Successfully",
-      mentor
-    })
+        message: "Mentor created Successfully",
+        
+      })
+    }
+    else{
+        res.status(400).send({message:`Mentor with ${req.body.Email} already exists`})
+    }
   } catch (error) {
     res.status(500).send({
       message: "Internal Server Error",

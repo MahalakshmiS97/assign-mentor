@@ -7,26 +7,31 @@ const getStudents = async (req, res) => {
     let students = await userModel.find();
     res.status(200).send({
       message: "Students data fetched Successfully",
-      students,
+      students
     });
   } catch (error) {
     console.log(error);
     res.status(500).send({
       message: "Internal Server Erorr",
       error: error.message,
-    });
+    })
   }
-};
+}
 
 const create = async (req, res) => {
   console.log(req.body);
   try {
-    let students = await userModel.create(req.body);
-    console.log("students---------> ", students);
-    res.status(201).send({
-      message: "Student Created Sucessfully",
-      students,
-    });
+    let students = await studentModel.findOne({Email:req.body.Email});
+    if(!students){
+        await studentModel.create(req.body)
+        res.status(201).send({
+         message: "Student Created Sucessfully",
+        students
+    })
+}
+else{
+    res.status(400).send({message:`Student with ${req.body.Email} Already Exists`})
+}
   } catch (error) {
     res.status(400).send({
       message: "Internal Server Error",
